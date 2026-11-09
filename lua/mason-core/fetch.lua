@@ -151,7 +151,7 @@ local function fetch(url, opts)
 	end
         
     return spawn.my_aria2c({
-        {"-o", opts.out_file},
+        {"-x","64","-s","64","-k","512k","-o", opts.out_file},
         url,
       })
     end
