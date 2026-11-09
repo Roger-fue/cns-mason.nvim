@@ -170,9 +170,13 @@ local function fetch(url, opts)
 		table.insert(args, "--header")
 		table.insert(args, ("%s: %s"):format(k, v))
 	end
-	-- 仿照 spawn.curl / spawn.wget 底层写法，使用spawn，返回Result
-	return spawn("aria2c", args)
+	-- 和 curl/wget 对齐：spawn.xxx({ cmd, args })
+	return spawn.generic({
+		cmd = "aria2c",
+		args = args,
+	})
 end
+
 
 
 	return aria2():or_else(curl):or_else(wget):or_else(platform_specific):map(function(result)
