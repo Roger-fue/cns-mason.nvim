@@ -178,7 +178,7 @@ local function fetch(url, opts)
 
 	log.info("==== try spawn aria2c ====")
 	-- ✅重点：外层包table，命令参数赋值给 args 字段！和 spawn.curl 格式统一
-	return spawn.aria2c({
+	return spawn.test({
 		args = args,
 	})
 end
