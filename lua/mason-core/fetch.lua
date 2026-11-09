@@ -145,9 +145,9 @@ local function fetch(url, opts)
 
 	local function aria2()
 	log.info("==== enter aria2 branch ====")
-	if opts.method ~= "GET" or not opts.out_file then
-		log.info("==== aria2 skip: not GET or no out_file ====")
-		return Result.failure("aria2 skip")
+	--if opts.method ~= "GET" or not opts.out_file then
+	--	log.info("==== aria2 skip: not GET or no out_file ====")
+	--	return Result.failure("aria2 skip")
 	end
 
 	local args = {
