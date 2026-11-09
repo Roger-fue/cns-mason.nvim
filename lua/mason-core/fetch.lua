@@ -151,8 +151,8 @@ local function fetch(url, opts)
 	end
 
 	local args = {
-		 url，
-         opts.out_file，
+		 url,
+         opts.out_file,
 	}
 
 	for k, v in pairs(opts.headers or {}) do
