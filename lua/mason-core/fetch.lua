@@ -153,9 +153,9 @@ local function fetch(url, opts)
 	local args = {
 		"--continue=true",
 		"-x",
-		"16",
+		"8",
 		"-s",
-		"16",
+		"8",
 		"-k",
 		"512K",
 		"--file-allocation=falloc",
