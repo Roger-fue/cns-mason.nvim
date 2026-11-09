@@ -145,26 +145,14 @@ local function fetch(url, opts)
 
 	local function aria2()
 	log.info("==== enter aria2 branch ====")
-	--if opts.method ~= "GET" or not opts.out_file then
-	--	log.info("==== aria2 skip: not GET or no out_file ====")
-	--	return Result.failure("aria2 skip")
-	--end
+	if opts.method ~= "GET" or not opts.out_file then
+		log.info("==== aria2 skip: not GET or no out_file ====")
+		return Result.failure("aria2 skip")
+	end
 
 	local args = {
-		"--continue=true",
-		"-x",
-		"64",
-		"-s",
-		"64",
-		"-k",
-		"512K",
-		"--file-allocation=falloc",
-		"--max-tries",
-		"20",
-		"--retry-wait",
-		"3",
-		"--connect-timeout",
-		tostring(TIMEOUT_SECONDS),
+		 url，
+         opts.out_file，
 	}
 
 	for k, v in pairs(opts.headers or {}) do
@@ -174,9 +162,7 @@ local function fetch(url, opts)
 
 	table.insert(args, url)
 
-	log.info("==== try spawn aria2c ====")
-	-- ✅重点：外层包table，命令参数赋值给 args 字段！和 spawn.curl 格式统一
-	return spawn.aria2c({
+	return spawn.my_aria2c({
 		args = args,
 	})
 end
