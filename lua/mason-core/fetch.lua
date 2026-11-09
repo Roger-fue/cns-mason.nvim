@@ -144,37 +144,36 @@ local function fetch(url, opts)
 	end
 
 	local function aria2()
-		if opts.method ~= "GET" or not opts.out_file then
-			return Result.failure("aria2 skip")
-		end
-
-		local args = {
-			"--continue=true",
-			"-x",
-			"64",
-			"-s",
-			"64",
-			"-k",
-			"512K",
-			"--file-allocation=falloc",
-			"--max-tries",
-			"20",
-			"--retry-wait",
-			"3",
-			"--connect-timeout",
-			tostring(TIMEOUT_SECONDS),
-			"-o",
-			opts.out_file,
-			url,
-		}
-
-		for k, v in pairs(opts.headers or {}) do
-			table.insert(args, "--header")
-			table.insert(args, ("%s: %s"):format(k, v))
-		end
-
-		return spawn.try("aria2c", args)
+	if opts.method ~= "GET" or not opts.out_file then
+		return Result.failure("aria2 skip")
 	end
+	local args = {
+		"--continue=true",
+		"-x",
+		"64",
+		"-s",
+		"64",
+		"-k",
+		"512K",
+		"--file-allocation=falloc",
+		"--max-tries",
+		"20",
+		"--retry-wait",
+		"3",
+		"--connect-timeout",
+		tostring(TIMEOUT_SECONDS),
+		"-o",
+		opts.out_file,
+		url,
+	}
+	for k, v in pairs(opts.headers or {}) do
+		table.insert(args, "--header")
+		table.insert(args, ("%s: %s"):format(k, v))
+	end
+	-- 仿照 spawn.curl / spawn.wget 底层写法，使用spawn，返回Result
+	return spawn("aria2c", args)
+end
+
 
 	return aria2():or_else(curl):or_else(wget):or_else(platform_specific):map(function(result)
 		if opts.out_file then
