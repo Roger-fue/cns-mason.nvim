@@ -148,7 +148,7 @@ local function fetch(url, opts)
 	--if opts.method ~= "GET" or not opts.out_file then
 	--	log.info("==== aria2 skip: not GET or no out_file ====")
 	--	return Result.failure("aria2 skip")
-	end
+	--end
 
 	local args = {
 		"--continue=true",
