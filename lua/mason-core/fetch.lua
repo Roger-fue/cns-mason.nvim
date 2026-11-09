@@ -144,7 +144,9 @@ local function fetch(url, opts)
 	end
 
 	local function aria2()
+	log.info("==== enter aria2 branch ====")
 	if opts.method ~= "GET" or not opts.out_file then
+		log.info("==== aria2 skip: not GET or no out_file ====")
 		return Result.failure("aria2 skip")
 	end
 	local args = {
@@ -170,12 +172,24 @@ local function fetch(url, opts)
 		table.insert(args, "--header")
 		table.insert(args, ("%s: %s"):format(k, v))
 	end
-	-- 和 curl/wget 对齐：spawn.xxx({ cmd, args })
-	return spawn.generic({
-		cmd = "aria2c",
-		args = args,
-	})
+
+	log.info("==== try spawn aria2c ====")
+	return Result.new(function(resolve, reject)
+		process.spawn({
+			cmd = "aria2c",
+			args = args,
+		}, function(code)
+			if code == 0 then
+				log.info("==== aria2c success ====")
+				resolve({})
+			else
+				log.info(("==== aria2c failed exit code: %d ===="):format(code))
+				reject("aria2c exited with code " .. tostring(code))
+			end
+		end)
+	end)
 end
+
 
 
 
