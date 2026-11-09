@@ -177,10 +177,12 @@ local function fetch(url, opts)
 	table.insert(args, url)
 
 	log.info("==== try spawn aria2c ====")
-	-- 底层通用生成器，第一个参数程序名，第二个参数是参数数组
-	return spawn.generic("aria2c", args)
+	-- ✅重点：外层包table，命令参数赋值给 args 字段！和 spawn.curl 格式统一
+	return spawn.aria2c({
+		args = args,
+	})
 end
-
+    
 	return aria2():or_else(curl):or_else(wget):or_else(platform_specific):map(function(result)
 		if opts.out_file then
 			return result
