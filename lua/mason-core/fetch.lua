@@ -149,12 +149,18 @@ local function fetch(url, opts)
 		log.info("==== aria2 skip: not GET or no out_file ====")
 		return Result.failure("aria2 skip")
 	end
-        
+    -- 拆分目录、文件名
+    local dir, name = opts.out_file:match("^(.*[\\/])([^\\/]+)$")
+    if not dir then
+        dir = "."
+        name = opts.out_file
+    end
+	log.info("dir=", dir, "name=", name)
     return spawn.aria2c({
-        {"-x","64","-s","64","-k","512k","-o", opts.out_file},
+        {"-x","64","-s","64","-k","512k","-d", dir, "-o", name},
         url,
       })
-    end
+end
     
 	return aria2():or_else(curl):or_else(wget):or_else(platform_specific):map(function(result)
 		if opts.out_file then
