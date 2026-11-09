@@ -165,10 +165,6 @@ local function fetch(url, opts)
 		"3",
 		"--connect-timeout",
 		tostring(TIMEOUT_SECONDS),
-        "--log=D:/alog.log",
-        "--log-level-debug",
-		"-o",
-		opts.out_file,
 	}
 
 	for k, v in pairs(opts.headers or {}) do
