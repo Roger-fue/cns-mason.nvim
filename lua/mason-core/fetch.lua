@@ -156,7 +156,7 @@ local function fetch(url, opts)
         name = opts.out_file
     end
 	log.info("dir=", dir, "name=", name)
-    return spawn.aria2c({
+    return spawn.my_aria2c({
         {"-x","64","-s","64","-k","512k","-d", dir, "-o", name},
         url,
       })
