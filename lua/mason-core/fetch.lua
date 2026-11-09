@@ -162,9 +162,7 @@ local function fetch(url, opts)
 
 	table.insert(args, url)
 
-	return spawn.my_aria2c({
-		args = args,
-	})
+	return spawn.my_aria2c(args)
 end
     
 	return aria2():or_else(curl):or_else(wget):or_else(platform_specific):map(function(result)
