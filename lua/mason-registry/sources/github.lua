@@ -122,15 +122,11 @@ function GitHubRegistrySource:install()
         )
         pcall(fs.async.unlink, zip_file)
 
-        local temp_checksums = path.concat { self.root_dir, "_tmp_checksums.txt" }
-try(
-    fetch(settings.current.github.download_url_template:format(self.repo, version, "checksums.txt"), {
-        out_file = temp_checksums,
-    }):map_err(_.always "Failed to download checksums.txt.")
-)
-local checksums = try(Result.pcall(fs.async.read_file, temp_checksums))
-pcall(fs.async.unlink, temp_checksums)
-
+        local checksums = try(
+            fetch(settings.current.github.download_url_template:format(self.repo, version, "checksums.txt")):map_err(
+                _.always "Failed to download checksums.txt."
+            )
+        )
 
         try(Result.pcall(fs.async.write_file, self.data_file, registry_contents))
         try(Result.pcall(
