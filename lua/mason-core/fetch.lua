@@ -7,7 +7,6 @@ local platform = require("mason-core.platform")
 local powershell = require("mason-core.installer.managers.powershell")
 local spawn = require("mason-core.spawn")
 local version = require("mason.version")
-local process = require("mason-core.process")
 
 local USER_AGENT = ("mason.nvim %s (+https://github.com/mason-org/mason.nvim)"):format(version.VERSION)
 
@@ -150,41 +149,36 @@ local function fetch(url, opts)
 		log.info("==== aria2 skip: not GET or no out_file ====")
 		return Result.failure("aria2 skip")
 	end
+
 	local args = {
 		"--continue=true",
-		"-x","64",
-		"-s","64",
-		"-k","512K",
+		"-x",
+		"64",
+		"-s",
+		"64",
+		"-k",
+		"512K",
 		"--file-allocation=falloc",
-		"--max-tries","20",
-		"--retry-wait","3",
-		"--connect-timeout",tostring(TIMEOUT_SECONDS),
-		"-o",opts.out_file,
-		url,
+		"--max-tries",
+		"20",
+		"--retry-wait",
+		"3",
+		"--connect-timeout",
+		tostring(TIMEOUT_SECONDS),
+		"-o",
+		opts.out_file,
 	}
+
 	for k, v in pairs(opts.headers or {}) do
-		table.insert(args,"--header")
-		table.insert(args,("%s: %s"):format(k, v))
+		table.insert(args, "--header")
+		table.insert(args, ("%s: %s"):format(k, v))
 	end
+
+	table.insert(args, url)
+
 	log.info("==== try spawn aria2c ====")
-
-	-- mason 异步协程：把回调 process.spawn 转成协程等待
-	local ok, exit_code = a.wait_for(function(resume)
-		process.spawn({
-			cmd = "aria2c",
-			args = args,
-		}, function(code)
-			resume(code)
-		end)
-	end)
-
-	if ok and exit_code == 0 then
-		log.info("==== aria2c success ====")
-		return Result.success({})
-	else
-		log.info(("==== aria2c failed exit code: %s ===="):format(tostring(exit_code)))
-		return Result.failure(("aria2c exited with code "..tostring(exit_code)))
-	end
+	-- 底层通用生成器，第一个参数程序名，第二个参数是参数数组
+	return spawn.generic("aria2c", args)
 end
 
 	return aria2():or_else(curl):or_else(wget):or_else(platform_specific):map(function(result)
