@@ -150,7 +150,7 @@ local function fetch(url, opts)
 		return Result.failure("aria2 skip")
 	end
         
-    return spawn.my_aria2c({
+    return spawn.aria2c({
         {"-x","64","-s","64","-k","512k","-o", opts.out_file},
         url,
       })
