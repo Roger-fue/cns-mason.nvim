@@ -149,21 +149,12 @@ local function fetch(url, opts)
 		log.info("==== aria2 skip: not GET or no out_file ====")
 		return Result.failure("aria2 skip")
 	end
-
-	local args = {
-		 url,
-         opts.out_file,
-	}
-
-	for k, v in pairs(opts.headers or {}) do
-		table.insert(args, "--header")
-		table.insert(args, ("%s: %s"):format(k, v))
-	end
-
-	table.insert(args, url)
-
-	return spawn.my_aria2c(args)
-end
+        
+    return spawn.my_aria2c({
+        {"-o", opts.out_file},
+        url,
+      })
+    end
     
 	return aria2():or_else(curl):or_else(wget):or_else(platform_specific):map(function(result)
 		if opts.out_file then
